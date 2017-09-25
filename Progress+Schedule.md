@@ -1,7 +1,7 @@
 # Project Progress & Schedule
 
-### Completed
-#### Week of 9/10 (Signed)
+## Completed
+### Week of 9/10 (Signed)
 Created project proposal
 
 #### Week of 9/17 (Signed)
@@ -16,7 +16,7 @@ Finalize Project Env
 Github
 
 
-### Scheduled
+## Scheduled
 #### Week of 10/1
 Meet with Professor on Monday/Tuesday to iron out proposal
 Define Input Interface
