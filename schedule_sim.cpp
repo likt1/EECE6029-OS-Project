@@ -17,6 +17,9 @@ int main(int argc, char* argv[]) {
         element->processNum, element->arrivalTime, element->burstTime);
     }
   }
+  else {
+    printf("Error opening file specified.\n");
+  }
   
   return 0;
 }

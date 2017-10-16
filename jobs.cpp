@@ -56,6 +56,9 @@ int jobs::init(char* filename) {
   return 0;
 }
 
+// Push
+// The list manages all pointers assigned to it. Do not delete pointers assigned
+//   to any part of the list.
 void jobs::push(job* newJob) {
   this->jobList.push_back(newJob);
 }
@@ -69,9 +72,18 @@ void jobs::push(int pn, int at, int bt) {
   this->jobList.push_back(newJob);
 }
 
+// Access
 job* jobs::getAt(int index) {
   if (index < this->jobList.size()) {
     return this->jobList[index];
+  }
+  
+  return NULL;
+}
+
+job* jobs::getTop() {
+  if (!this->jobList.empty()) {
+    return this->getAt(0);
   }
   
   return NULL;
@@ -81,6 +93,12 @@ int jobs::size() {
   return this->jobList.size();
 }
 
+// Sort *TODO
+void jobs::sort(int method) {
+  
+}
+
+// Clear
 void jobs::clearList() {
   for (int i = 0; i < this->jobList.size(); i++) {
     delete this->jobList[i];
