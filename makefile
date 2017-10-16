@@ -6,8 +6,8 @@ DEPS = jobs.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 make: jobs.o schedule_sim.o 
-	gcc -o schedule_sim.out schedule_sim.o jobs.o -I.
+	g++ -o schedule_sim.out schedule_sim.o jobs.o -I.
 	
 clean:
-	rm *.o *.out
+	rm -f *.o *.out
 
