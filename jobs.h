@@ -16,14 +16,23 @@ class jobs {
 
 private:
   // vector job list
+  // If we keep it as job*, the get functions can return NULL if it fails. We
+  //   can use unique pointers here but since you're not familiar with them it
+  //   would probably be better using standard pointers and not messing with
+  //   deletion.
   std::vector<job*> jobList;
+  
+  // compares
+  static bool compByProcess(job*, job*);
+  static bool compByArrival(job*, job*);
+  static bool compByBurst(job*, job*);
 
 public:
   jobs();
   ~jobs();
   
-  // parses input file
-  int init(char*);
+  // parses input file.
+  bool init(char*); // Returns success/fail.
   
   // adds job to end of list
   void push(int, int, int);
@@ -37,7 +46,9 @@ public:
   int size();
   
   // sorts the list based on 1:process, 2:arrivalT, 3:burstT
-  void sort(int);
+  bool sort(int); // Returns success/fail
+  bool compare(job*, job*, int);
+  bool equals(job*, job*);
   
   // clears the list
   void clearList();
