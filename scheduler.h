@@ -23,6 +23,7 @@ public:
 
 	// schedulers
 	void FIFO(jobs*);
+	void ageBasedPri(jobs*);
 
 	// adds result to end of list, calculates TAT and WT
 	void push(job*, int);

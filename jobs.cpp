@@ -23,6 +23,7 @@ bool jobs::init(char* filename) {
   std::string line;
   std::ifstream file(filename);
   if (file.is_open()) {
+    int jobID = 0;
     while (getline(file, line)) {
       if (line.find('/') == std::string::npos) { // ignore comments in csv
         char* tmp = new char[line.length() + 1]; // create new cstring
@@ -45,13 +46,18 @@ bool jobs::init(char* filename) {
             case 2:
               newJob->burstTime = val;
               break;
+            case 3:
+              newJob->priority = val;
+              break;
           }
           
           cnt++;
           tok = std::strtok(NULL,",");
         }
 
+        
         this->push(newJob);
+        jobID++;
         delete[] tmp;
       }
     }

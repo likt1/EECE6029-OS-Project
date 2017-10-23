@@ -61,6 +61,26 @@ void scheduler::FIFO(jobs* schedulerJobs) {
     }
 }
 
+// Non-preemptive priority scheduler based on age
+void scheduler::ageBasedPri(jobs* schedulerJobs) {
+	this->clearList();
+  schedulerJobs->sort(2);
+
+  int currentTime = 0; // system clock
+  int working = -1; // which job we are currently working on
+  int totalJobs = schedulerJobs->size();
+  int remainingJobs = totalJobs;
+  std::vector<job> queue;
+
+  while(remainingJobs > 0) {
+    job* nextReadyJob = schedulerJobs->getAt(totalJobs - remainingJobs);
+    // if next ready job has arrived given the current time, add to queue
+    
+    // if queue is not empty, work on highest priority
+    
+    currentTime++;
+  }
+}
 
 //====================== Print function ======================//
 void scheduler::print() {
