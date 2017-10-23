@@ -2,7 +2,7 @@
 
 #include "jobs.h"
  
-void FIFO(jobs);
+void FIFO(jobs*);
 
 int main(int argc, char* argv[]) {
   jobs schedulerJobs;
@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
     schedulerJobs.print();
 
     printf("\nAfter FIFO:\n");
-    FIFO(schedulerJobs);
+    FIFO(&schedulerJobs);
   }
   else {
     printf("Error opening file specified.\n");
@@ -29,21 +29,21 @@ int main(int argc, char* argv[]) {
 }
 
 // To do: move this out to its own function 'n stuff. How? TBD 10/23
-void FIFO(jobs schedulerJobs) {
+void FIFO(jobs* schedulerJobs) {
       //FIFO is going to be very simple. Just keep dequeueing the sorted queue.
-    schedulerJobs.sort(2);
+    schedulerJobs->sort(2);
 
-    int completionTime  = schedulerJobs.getTop() -> arrivalTime;
-    int completionTimes [schedulerJobs.size()];
-    int turnAroundTimes [schedulerJobs.size()];
-    int waitingTimes    [schedulerJobs.size()];
+    int completionTime  = schedulerJobs->getTop() -> arrivalTime;
+    int completionTimes [schedulerJobs->size()];
+    int turnAroundTimes [schedulerJobs->size()];
+    int waitingTimes    [schedulerJobs->size()];
 
     printf("---------- + ---------- + ---------- + ---------- + ----------- + ----------\n");
     printf("%-10s | %-10s | %-10s | %-10s | %-11s | %-10s\n", "Process #", "Arrival", "Burst", "Completion", "Turn-Around", "Waiting"); 
     printf("---------- + ---------- + ---------- + ---------- + ----------- + ----------\n");
 
-    for (int i = 0; i < schedulerJobs.size(); i++) {
-      job* nextJob = schedulerJobs.getAt(i);
+    for (int i = 0; i < schedulerJobs->size(); i++) {
+      job* nextJob = schedulerJobs->getAt(i);
       printf("%-10d | %-10d | %-10d | ",
         nextJob->processNum, nextJob->arrivalTime, nextJob->burstTime);
 
