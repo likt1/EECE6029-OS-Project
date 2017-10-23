@@ -1,5 +1,6 @@
 # Benchmarking Schedulers
 EECE6029 OS Project
+
 Darius Cepulis & Kendrick Li
 
 ## Objective
@@ -18,8 +19,9 @@ Write scheduler(s) in C/C++ to demonstrate implementation of schedulers and simu
 4. Receive graphical output
 
 ## Schedulers
-1. First In First Out
+1. First-In First-Out
 2. Shortest Job First
+	* Prediction-Based
 3. Round Robin
 4. Age-Based Priority
 5. Multilevel Feedback Queue
@@ -31,3 +33,17 @@ Write scheduler(s) in C/C++ to demonstrate implementation of schedulers and simu
 * Five or Six Schedulers
 * Input Interface
 * Output Graphs
+
+## Input Interface
+* File Reads
+* CSV: Process Number, Arrival Time, Burst Time, Priority (Optional)
+* Argument: Time Quantum
+
+## Additional Design Goals
+* Creativity is Important
+* Test on Multiple Systems
+	* Including Single Core v. Multi Core
+* Define Test Suite
+* Alpha Test Internally, Beta Test with Professor & Peers
+* Provide Gantt Charts 
+* Provide Complexity Analysis
