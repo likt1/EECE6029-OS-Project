@@ -34,17 +34,19 @@ Deadlines:
 * Thu 26, Scheduler 2/2
 * October 26 -- Nov 5: Iron out the alpha
 
-## Scheduled
 #### Week of 10/22
 Simple scheduler writing to be completed
+* Kendrick: CLI Input, Age-Based Priority, RR (as functions on main())
+* Darius: SJF, Scheduler Class with CLI Output (move main() schedulers to class)
 Finalize test suites
 
+## Scheduled
 #### Week of 10/29
 Polish
 * Refactored code
 * Good CLI output
 Decide on GUI output
-Scheduler writing schedulers, writing GUI output, testing & documentation
+Schedule writing schedulers, writing GUI output, testing & documentation
 
 #### _By 11/30_
 Woring complex schedulers (ML Feedback, Linux CFS)

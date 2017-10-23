@@ -25,8 +25,8 @@ Write scheduler(s) in C/C++ to demonstrate implementation of schedulers and simu
 3. Round Robin
 4. Age-Based Priority
 5. Multilevel Feedback Queue
-  * Aging by moving around queues
-  * 3 Queues Minimum
+	* Aging by moving around queues
+	* 3 Queues Minimum
 6. Homemade Linux CFS
 
 ## Things to Write
