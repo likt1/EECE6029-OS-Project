@@ -7,6 +7,8 @@
 #include <cstring>
 #include <cstdlib>
 
+#include "stdio.h"
+
 //====================== Init functions ======================//
 jobs::jobs() {
 }
@@ -95,6 +97,22 @@ job* jobs::getTop() {
 
 int jobs::size() {
   return this->jobList.size();
+}
+
+void jobs::print() {
+  printf("---------- + ---------- + ----------  \n");
+  printf("%-10s | %-10s | %-10s\n", "Process #", "Arrival", "Burst"); 
+  printf("---------- + ---------- + ----------  \n");
+
+  for (int i = 0; i < this->size(); i++) {
+    job* element = this->getAt(i);
+
+    printf("%-10d | %-10d | %-10d\n",
+        element->processNum, element->arrivalTime, element->burstTime);
+  }
+
+
+  printf("---------- + ---------- + ----------  \n\n");
 }
 
 //====================== Sort functions ======================//

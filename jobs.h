@@ -41,6 +41,9 @@ public:
   // gets a job pointer for the requested index
   job* getAt(int);
   job* getTop();
+
+  // print job table
+  void print();
   
   // returns size of list
   int size();
