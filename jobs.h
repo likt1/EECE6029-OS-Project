@@ -6,8 +6,10 @@
 // job object for a sample job
 struct job {
   int processNum;
+  int jobID;
   int arrivalTime;
   int burstTime;
+  int priority;
 };
 
 // jobs wrapper object. Manages the import and storage of jobs as they come

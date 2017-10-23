@@ -29,6 +29,7 @@ bool jobs::init(char* filename) {
         std::strcpy(tmp, line.c_str()); // move string into cstring
 
         job* newJob = new job();
+
         int cnt = 0;
 
         char* tok = std::strtok(tmp, ","); // tokenize off commas
@@ -99,20 +100,22 @@ int jobs::size() {
   return this->jobList.size();
 }
 
+
+//====================== Print function ======================//
 void jobs::print() {
-  printf("---------- + ---------- + ----------  \n");
-  printf("%-10s | %-10s | %-10s\n", "Process #", "Arrival", "Burst"); 
-  printf("---------- + ---------- + ----------  \n");
+    printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
+    printf("%-10s | %-4s | %-8s | %-8s | %-8s\n | %-10s | %-11s | %-10s\n", "Process #", "ID", "Priority", "Arrival", "Burst", "Completion", "Turn-Around", "Waiting"); 
+  printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
 
   for (int i = 0; i < this->size(); i++) {
     job* element = this->getAt(i);
 
-    printf("%-10d | %-10d | %-10d\n",
-        element->processNum, element->arrivalTime, element->burstTime);
+    printf("%-10d | %-4d | %-8d | %-8d | %-8d\n",
+        element->processNum, element->jobID, element->priority, element->arrivalTime, element->burstTime);
   }
 
 
-  printf("---------- + ---------- + ----------  \n\n");
+  printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
 }
 
 //====================== Sort functions ======================//

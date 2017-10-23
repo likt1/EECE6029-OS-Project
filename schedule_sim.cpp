@@ -14,9 +14,6 @@ int main(int argc, char* argv[]) {
   
   if (success) {
     schedulerJobs.print();
-    printf("\nAfter sorting by Process Number Time:\n");
-    schedulerJobs.sort(1);
-    schedulerJobs.print();
 
     printf("\nAfter FIFO:\n");
     FIFO(&schedulerJobs);
@@ -38,14 +35,14 @@ void FIFO(jobs* schedulerJobs) {
     int turnAroundTimes [schedulerJobs->size()];
     int waitingTimes    [schedulerJobs->size()];
 
-    printf("---------- + ---------- + ---------- + ---------- + ----------- + ----------\n");
-    printf("%-10s | %-10s | %-10s | %-10s | %-11s | %-10s\n", "Process #", "Arrival", "Burst", "Completion", "Turn-Around", "Waiting"); 
-    printf("---------- + ---------- + ---------- + ---------- + ----------- + ----------\n");
+    printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
+    printf("%-10s | %-4s | %-8s | %-8s | %-8s | %-10s | %-11s | %-10s\n", "Process #", "ID", "Priority", "Arrival", "Burst", "Completion", "Turn-Around", "Waiting"); 
+    printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
 
     for (int i = 0; i < schedulerJobs->size(); i++) {
       job* nextJob = schedulerJobs->getAt(i);
-      printf("%-10d | %-10d | %-10d | ",
-        nextJob->processNum, nextJob->arrivalTime, nextJob->burstTime);
+      printf("%-10d | %-4d | %-8d | %-8d | %-8d | ",
+      nextJob->processNum, nextJob->jobID, nextJob->priority, nextJob->arrivalTime, nextJob->burstTime);
 
       completionTime  += nextJob->burstTime;
 
@@ -57,5 +54,5 @@ void FIFO(jobs* schedulerJobs) {
         completionTimes[i], turnAroundTimes[i], waitingTimes[i]);
     }
 
-    printf("---------- + ---------- + ---------- + ---------- + ----------- + ----------\n");
+    printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
 }
