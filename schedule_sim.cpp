@@ -20,6 +20,10 @@ int main(int argc, char* argv[]) {
     printf("\nAfter FIFO:\n");
     scheduledJobs.FIFO(&schedulerJobs);
     scheduledJobs.print();
+    
+    printf("\nAfter Age Based Pri:\n");
+    scheduledJobs.ageBasedPri(&schedulerJobs);
+    scheduledJobs.print();
   }
   else {
     printf("Error opening file specified.\n");

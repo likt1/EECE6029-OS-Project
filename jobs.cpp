@@ -30,6 +30,7 @@ bool jobs::init(char* filename) {
         std::strcpy(tmp, line.c_str()); // move string into cstring
 
         job* newJob = new job();
+        newJob->jobID = jobID;
 
         int cnt = 0;
 
@@ -54,7 +55,6 @@ bool jobs::init(char* filename) {
           cnt++;
           tok = std::strtok(NULL,",");
         }
-
         
         this->push(newJob);
         jobID++;

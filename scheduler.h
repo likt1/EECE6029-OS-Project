@@ -11,7 +11,6 @@ struct result {
 	int  waitingTime;
 };
 
-
 class scheduler {
 
 private:
@@ -20,10 +19,6 @@ private:
 public:
 	scheduler();
 	~scheduler();
-
-	// schedulers
-	void FIFO(jobs*);
-	void ageBasedPri(jobs*);
 
 	// adds result to end of list, calculates TAT and WT
 	void push(job*, int);
@@ -39,7 +34,15 @@ public:
 	void gantt();
 
 	// clears the list
-  	void clearList();
+  void clearList();
+
+	// schedulers
+	// FIFO
+	void FIFO(jobs*);
+	
+	// Age Based Priority
+	void ageBasedPri(jobs*);
+	int calcPri(int, job*, int);
 };
 
 #endif
