@@ -6,7 +6,7 @@
 scheduler::scheduler()  {}
 
 scheduler::~scheduler() { 
-	clearList(); 
+	clearScheduler(); 
 }
 
 //====================== Push functions ======================//
@@ -24,6 +24,15 @@ void scheduler::push(job* job, int ct) {
   this->resultsList.push_back(newResult);
 }
 
+void scheduler::pushHistory(job* job, int startTime, int burst) {
+  historyObj* newHistory = new historyObj();
+  newHistory->orgJbPntr  = job;
+  newHistory->stTime     = startTime;
+  newHistory->burst      = burst;
+
+  this->history.push_back(newHistory);
+}
+
 //====================== Access functions ======================//
 result* scheduler::getAt(int index) {
   if (index < this->resultsList.size()) {
@@ -39,25 +48,25 @@ int scheduler::size() {
 
 //======================== SCHEDULERS ========================//
 void scheduler::FIFO(jobs* schedulerJobs) {
-	this->clearList();
-    schedulerJobs->sort(2);
+	this->clearScheduler();
+  schedulerJobs->sort(2);
 
-    int currentTime = 0;
+  int currentTime = 0;
 
-    for (int i = 0; i < schedulerJobs->size(); i++) {
+  for (int i = 0; i < schedulerJobs->size(); i++) {
 
-      job* nextJob = schedulerJobs->getAt(i);
+    job* nextJob = schedulerJobs->getAt(i);
 
-      // if there are no jobs pending at current time, 
-      // we advance current time to the next job
-      if (currentTime < nextJob->arrivalTime) {
-      	currentTime = nextJob->arrivalTime;
-      } 
+    // if there are no jobs pending at current time, 
+    // we advance current time to the next job
+    if (currentTime < nextJob->arrivalTime) {
+    	currentTime = nextJob->arrivalTime;
+    } 
 
-      currentTime += nextJob->burstTime;
+    currentTime += nextJob->burstTime;
 
-      this->push(nextJob, currentTime);
-      // this->pushHistory(nextJob, currentTime - nextJob->burstTime, nextJob->burstTime);
+    this->push(nextJob, currentTime);
+    this->pushHistory(nextJob, currentTime - nextJob->burstTime, nextJob->burstTime);
 
     }
 }
@@ -86,7 +95,7 @@ void scheduler::addToJobQueue(jobs* sj, int tj, int* rj, int ct, queueObjList* q
 //    3. Add incoming jobs to the internal job queue
 //    4. End loop of all jobs are finished
 void scheduler::roundRobin(jobs* schedulerJobs) {
-  this->clearList();
+  this->clearScheduler();
   schedulerJobs->sort(2); // sort on arrival time
 
   int currentTime = 0; // system clock
@@ -153,7 +162,7 @@ int scheduler::calcPri(int currentTime, job* job, int minWait) {
 
 // Non-preemptive priority scheduler based on age
 void scheduler::ageBasedPri(jobs* schedulerJobs) {
-	this->clearList();
+	this->clearScheduler();
   schedulerJobs->sort(2); // sort on arrival time
 
   int currentTime = 0; // system clock
@@ -219,28 +228,57 @@ void scheduler::ageBasedPri(jobs* schedulerJobs) {
 //====================== Print function ======================//
 void scheduler::print() {
 	printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
-    printf("%-10s | %-4s | %-8s | %-8s | %-8s | %-10s | %-11s | %-10s\n", "Process #", "ID", "Priority", "Arrival", "Burst", "Completion", "Turn-Around", "Waiting"); 
-    printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
+  printf("%-10s | %-4s | %-8s | %-8s | %-8s | %-10s | %-11s | %-10s\n", "Process #", "ID", "Priority", "Arrival", "Burst", "Completion", "Turn-Around", "Waiting"); 
+  printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
 
-    for (int i = 0; i < this->size(); i++) {
-    	result* element = this->getAt(i);
-    	job* completedJob = element->completedJob;
-    	 printf("%-10d | %-4d | %-8d | %-8d | %-8d | %-10d | %-11d | %-10d\n",
-    	 	completedJob->processNum, completedJob->jobID, completedJob->priority, completedJob->arrivalTime, completedJob->burstTime,
-    	 	element->completionTime, element->turnAroundTime, element->waitingTime);
-    }
+  for (int i = 0; i < this->size(); i++) {
+  	result* element = this->getAt(i);
+  	job* completedJob = element->completedJob;
+  	 printf("%-10d | %-4d | %-8d | %-8d | %-8d | %-10d | %-11d | %-10d\n",
+  	 	completedJob->processNum, completedJob->jobID, completedJob->priority, completedJob->arrivalTime, completedJob->burstTime,
+  	 	element->completionTime, element->turnAroundTime, element->waitingTime);
+  }
 
-    printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
+  printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
 }
 
 void scheduler::gantt() {
-	// TODO print out std::vector<historyObj> history in a gantt chart
+  int gTime = 0;
+
+  printf("\nGANTT beta\n");
+
+  for (int i=0; i < this->history.size(); i++) {
+    historyObj* element   = this->history[i];
+    job*        job       = element->orgJbPntr;
+    int         startTime = element->stTime;
+    int         burst     = element->burst;
+
+    if (gTime < startTime) {
+      printf("+-----------+\n| ti = %-4d |\n|           |\n|           |\n| tf = %-4d |\n", gTime, startTime);
+      gTime = startTime;
+
+    } else if (gTime > startTime) {
+      printf("\nERROR: Job begins while another job is executing, I think?\n");
+      return;
+    }
+
+    printf("+-----------+\n| ti = %-4d |\n| P# = %-4d |\n| ID = %-4d |\n| tf = %-4d |\n", gTime, job->processNum, job->jobID, gTime+burst);
+
+    gTime += burst;
+  }
+
+  printf("+-----------+\n");
 }
 
 //====================== Clear functions ======================//
-void scheduler::clearList() {
+void scheduler::clearScheduler() {
   for (int i = 0; i < this->resultsList.size(); i++) {
     delete this->resultsList[i];
   }
   this->resultsList.clear();
+
+  for (int i = 0; i < this->history.size(); i++) {
+    delete this->history[i];
+  }
+  this->history.clear();
 }

@@ -30,7 +30,7 @@ class scheduler {
 
 private:
 	std::vector<result*> resultsList;
-	std::vector<historyObj> history;
+	std::vector<historyObj*> history;
 
 public:
 	scheduler();
@@ -38,6 +38,9 @@ public:
 
 	// adds result to end of list, calculates TAT and WT
 	void push(job*, int);
+
+	// appends job history object to history list
+	void pushHistory(job*, int, int);
 
 	// returns size of result list
 	int size();
@@ -49,8 +52,8 @@ public:
 	void print();
 	void gantt();
 
-	// clears the list
-  void clearList();
+	// clears the results and history
+    void clearScheduler();
 
 	// schedulers
 	// FIFO

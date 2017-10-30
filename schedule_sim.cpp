@@ -20,6 +20,7 @@ int main(int argc, char* argv[]) {
     printf("\nAfter FIFO:\n");
     scheduledJobs.FIFO(&schedulerJobs);
     scheduledJobs.print();
+    scheduledJobs.gantt();
     
     printf("\nAfter Round Robin:\n");
     scheduledJobs.roundRobin(&schedulerJobs);
