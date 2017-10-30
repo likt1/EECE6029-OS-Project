@@ -20,10 +20,17 @@ struct result {
 	int  waitingTime;
 };
 
+struct historyObj {
+  job* orgJbPntr;
+  int stTime;
+  int burst;
+};
+
 class scheduler {
 
 private:
 	std::vector<result*> resultsList;
+	std::vector<historyObj> history;
 
 public:
 	scheduler();

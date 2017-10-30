@@ -57,6 +57,7 @@ void scheduler::FIFO(jobs* schedulerJobs) {
       currentTime += nextJob->burstTime;
 
       this->push(nextJob, currentTime);
+      // this->pushHistory(nextJob, currentTime - nextJob->burstTime, nextJob->burstTime);
 
     }
 }
@@ -233,7 +234,7 @@ void scheduler::print() {
 }
 
 void scheduler::gantt() {
-	//TODO
+	// TODO print out std::vector<historyObj> history in a gantt chart
 }
 
 //====================== Clear functions ======================//
