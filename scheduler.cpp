@@ -2,15 +2,6 @@
 #include "jobs.h"
 
 #include "stdio.h"
-#include <list>
-
-// Aged based priority helper structs
-struct queueObj {
-  job* originalJobPointer;
-  job queueJob;
-};
-
-#define queueObjList std::list<queueObj>
 
 scheduler::scheduler()  {}
 
@@ -70,6 +61,85 @@ void scheduler::FIFO(jobs* schedulerJobs) {
     }
 }
 
+// addToJobQueue is shared between RR and TB-PQ
+void scheduler::addToJobQueue(jobs* sj, int tj, int* rj, int ct, queueObjList* q) {
+  if (*rj > 0) {
+    job* nextReadyJob = sj->getAt(tj - *rj); // get next ready job
+    
+    // if that job arrived at the current time
+    if (nextReadyJob->arrivalTime == ct) { 
+      queueObj temp; // construct queueJob
+      temp.originalJobPointer = nextReadyJob;
+      temp.queueJob = *nextReadyJob;
+    
+      q->push_back(temp); // create a copy and insert into queue
+      (*rj)--;
+    }
+  }
+}
+
+// simulated scheduler works in 4 steps that are repeated until we complete all 
+//  jobs.
+//    1. Assign cpu to work on a job
+//    2. Work on the job and handle whatever happens for that job
+//    3. Add incoming jobs to the internal job queue
+//    4. End loop of all jobs are finished
+void scheduler::roundRobin(jobs* schedulerJobs) {
+  this->clearList();
+  schedulerJobs->sort(2); // sort on arrival time
+
+  int currentTime = 0; // system clock
+  int totalJobs = schedulerJobs->size();
+  int remainingJobs = totalJobs;
+  int timeQuantum = 5; // time to take on job before preemption
+  int timeWorked = 0;
+  bool running = true;
+  bool isWorking = false;
+  queueObjList queue; // std::list<queueObj>
+  queueObjList::iterator working; // which job we are currently working on
+
+  while (running) {
+    // if we aren't working on a job and there are jobs in queue, 
+    //  1. begin work on next job
+    if (!isWorking && !queue.empty()) {
+      // begin() returns iterator, which is basically a pointer to the element
+      working = queue.begin();
+      isWorking = true;
+    }
+    
+    // 2. work on job if we are working on a job.
+    if (isWorking) {
+      (*working).queueJob.burstTime--;
+      timeWorked++;
+      
+      // if we complete a job then add to results
+      if ((*working).queueJob.burstTime == 0) {
+        this->push((*working).originalJobPointer, currentTime);
+        queue.erase(working);
+        isWorking = false;
+        timeWorked = 0;
+      }
+      
+      // if we didn't complete it, but the time quantum is reached, preempt
+      if (timeWorked == timeQuantum) {
+        queue.splice(queue.end(), queue, working);
+        isWorking = false;
+        timeWorked = 0;
+      }
+    }
+    
+    // 3. if next ready job has arrived given the current time, add to queue
+    this->addToJobQueue(schedulerJobs, totalJobs, &remainingJobs, currentTime, &queue);
+    
+    // 4. if all jobs are finished
+    if (!isWorking && queue.empty() && remainingJobs == 0) {
+      running = false;
+    }
+    
+    currentTime++; // inc time
+  }
+}
+
 // supporting functions for age based priority
 // Calculate priority given the amount of time the job has been waiting
 int scheduler::calcPri(int currentTime, job* job, int minWait) {
@@ -95,7 +165,7 @@ void scheduler::ageBasedPri(jobs* schedulerJobs) {
 
   while (running) {
     // if we aren't working on a job and there are jobs in queue, 
-    //  work on highest priority
+    //  1. find highest priority job in queue and begin work on it
     if (!isWorking && !queue.empty()) {
       // begin() returns iterator, which is basically a pointer to the element
       queueObjList::iterator highest = queue.begin();
@@ -121,7 +191,7 @@ void scheduler::ageBasedPri(jobs* schedulerJobs) {
       isWorking = true;
     }
     
-    // work on job if we are working on a job (non-preemptive)
+    // 2. work on job if we are working on a job (non-preemptive)
     if (isWorking) {
       (*working).queueJob.burstTime--;
       
@@ -133,21 +203,11 @@ void scheduler::ageBasedPri(jobs* schedulerJobs) {
       }
     }
     
-    // if next ready job has arrived given the current time, add to queue
-    if (remainingJobs > 0) {
-      job* nextReadyJob = schedulerJobs->getAt(totalJobs - remainingJobs);
-      if (nextReadyJob->arrivalTime == currentTime) {
-        queueObj temp; // construct queueJob
-        temp.originalJobPointer = nextReadyJob;
-        temp.queueJob = *nextReadyJob;
-      
-        queue.push_back(temp); // create a copy and insert into queue
-        remainingJobs--;
-      }
-    }
+    // 3. if next ready job has arrived given the current time, add to queue
+    this->addToJobQueue(schedulerJobs, totalJobs, &remainingJobs, currentTime, &queue);
     
-    // if all jobs are finished
-    if (!isWorking && queue.empty()) {
+    // 4. if all jobs are finished
+    if (!isWorking && queue.empty() && remainingJobs == 0) {
       running = false;
     }
     

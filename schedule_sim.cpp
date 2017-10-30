@@ -21,6 +21,10 @@ int main(int argc, char* argv[]) {
     scheduledJobs.FIFO(&schedulerJobs);
     scheduledJobs.print();
     
+    printf("\nAfter Round Robin:\n");
+    scheduledJobs.roundRobin(&schedulerJobs);
+    scheduledJobs.print();
+    
     printf("\nAfter Age Based Pri:\n");
     scheduledJobs.ageBasedPri(&schedulerJobs);
     scheduledJobs.print();

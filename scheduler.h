@@ -3,6 +3,15 @@
 
 #include "jobs.h"
 #include <vector>
+#include <list>
+
+#define queueObjList std::list<queueObj>
+
+// Helper structs
+struct queueObj {
+  job* originalJobPointer;
+  job queueJob;
+};
 
 struct result {
 	job* completedJob;
@@ -40,9 +49,15 @@ public:
 	// FIFO
 	void FIFO(jobs*);
 	
+	// Round Robin
+	void roundRobin(jobs*);
+	
 	// Age Based Priority
 	void ageBasedPri(jobs*);
 	int calcPri(int, job*, int);
+	
+	// Shared code between schedulers
+	void addToJobQueue(jobs*, int, int*, int, queueObjList*);
 };
 
 #endif
