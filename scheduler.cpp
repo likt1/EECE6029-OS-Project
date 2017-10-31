@@ -92,7 +92,7 @@ void scheduler::idealSJF(jobs* schedulerJobs) {
     // check all the jobs before or at current time.
     // pick the first incomplete one.
     // because they're sorted by BT, the first will be shortest
-    for (i; i < schedulerJobs->size(); i++) {
+    for (; i < schedulerJobs->size(); i++) {
       currentJob = schedulerJobs->getAt(i);
       if ((currentJob->arrivalTime <= currentTime) && (!jobCompleted[i])) {
         // found the shortest incomplete job
@@ -229,7 +229,7 @@ void scheduler::ageBasedPri(jobs* schedulerJobs) {
       queueObjList::iterator highest = queue.begin();
       queueObjList::iterator next = queue.begin();
       ++next;
-      for (next; next != queue.end(); ++next) {
+      for (; next != queue.end(); ++next) {
         job* hJob = &((*highest).queueJob);
         job* itJob = &((*next).queueJob);
         
@@ -278,6 +278,9 @@ void scheduler::ageBasedPri(jobs* schedulerJobs) {
 
 //====================== Print function ======================//
 void scheduler::print() {
+  int tatSum = 0;
+  int wtSum  = 0;
+
 	printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
   printf("%-10s | %-4s | %-8s | %-8s | %-8s | %-10s | %-11s | %-10s\n", "Process #", "ID", "Priority", "Arrival", "Burst", "Completion", "Turn-Around", "Waiting"); 
   printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
@@ -288,9 +291,14 @@ void scheduler::print() {
   	 printf("%-10d | %-4d | %-8d | %-8d | %-8d | %-10d | %-11d | %-10d\n",
   	 	completedJob->processNum, completedJob->jobID, completedJob->priority, completedJob->arrivalTime, completedJob->burstTime,
   	 	element->completionTime, element->turnAroundTime, element->waitingTime);
+
+    tatSum += element->turnAroundTime;
+    wtSum  += element->waitingTime;
   }
 
-  printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n");
+  printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n\n");
+
+  printf("AVERAGE TURN-AROUND TIME: %d\nAVERAGE WAITING TIME: %d\n", tatSum/this->size(), wtSum/this->size());
 }
 
 void scheduler::gantt() {
