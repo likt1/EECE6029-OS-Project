@@ -25,10 +25,12 @@ int main(int argc, char* argv[]) {
     printf("\nAfter Round Robin:\n");
     scheduledJobs.roundRobin(&schedulerJobs);
     scheduledJobs.print();
+    scheduledJobs.gantt();
     
     printf("\nAfter Age Based Pri:\n");
     scheduledJobs.ageBasedPri(&schedulerJobs);
     scheduledJobs.print();
+    scheduledJobs.gantt();
   }
   else {
     printf("Error opening file specified.\n");

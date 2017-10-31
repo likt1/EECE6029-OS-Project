@@ -125,6 +125,8 @@ void scheduler::roundRobin(jobs* schedulerJobs) {
       // if we complete a job then add to results
       if ((*working).queueJob.burstTime == 0) {
         this->push((*working).originalJobPointer, currentTime);
+        this->pushHistory((*working).originalJobPointer, currentTime - timeWorked, 
+                          timeWorked);
         queue.erase(working);
         isWorking = false;
         timeWorked = 0;
@@ -132,6 +134,8 @@ void scheduler::roundRobin(jobs* schedulerJobs) {
       
       // if we didn't complete it, but the time quantum is reached, preempt
       if (timeWorked == timeQuantum) {
+        this->pushHistory((*working).originalJobPointer, currentTime - timeWorked, 
+                          timeWorked);
         queue.splice(queue.end(), queue, working);
         isWorking = false;
         timeWorked = 0;
@@ -208,6 +212,9 @@ void scheduler::ageBasedPri(jobs* schedulerJobs) {
       // if we complete a job then add to results
       if ((*working).queueJob.burstTime == 0) {
         this->push((*working).originalJobPointer, currentTime);
+        this->pushHistory((*working).originalJobPointer, 
+                          currentTime - (*working).originalJobPointer->burstTime, 
+                          (*working).originalJobPointer->burstTime);
         queue.erase(working);
         isWorking = false;
       }
