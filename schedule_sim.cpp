@@ -31,6 +31,11 @@ int main(int argc, char* argv[]) {
     scheduledJobs.ageBasedPri(&schedulerJobs);
     scheduledJobs.print();
     scheduledJobs.gantt();
+
+    printf("\nAfter Ideal SJF:\n");
+    scheduledJobs.idealSJF(&schedulerJobs);
+    scheduledJobs.print();
+    scheduledJobs.gantt();
   }
   else {
     printf("Error opening file specified.\n");

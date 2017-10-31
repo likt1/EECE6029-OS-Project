@@ -56,8 +56,12 @@ public:
     void clearScheduler();
 
 	// schedulers
-	// FIFO
+	// First-In First Out
 	void FIFO(jobs*);
+
+	// Shortest Job First
+	void idealSJF(jobs*);
+	void realSJF(jobs*, int);
 	
 	// Round Robin
 	void roundRobin(jobs*);

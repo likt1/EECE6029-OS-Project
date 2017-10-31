@@ -71,6 +71,50 @@ void scheduler::FIFO(jobs* schedulerJobs) {
     }
 }
 
+void scheduler::idealSJF(jobs* schedulerJobs) {
+  this->clearScheduler();
+  schedulerJobs->sort(3); //sort by burst
+
+  int currentTime = 0;
+  int jobsRemaining = schedulerJobs->size();
+  std::vector<bool> jobCompleted(jobsRemaining, false);
+
+  // This is not a particularly efficient algorithm, I know.
+  // But on the scale of scheduling that we're doing in the alpha
+  // I don't see it being an issue, do you?
+  //
+  // TODO: rewrite with less loops
+  while (jobsRemaining != 0) {
+    int i = 0;
+    job* currentJob;
+    int incrementCurrentTime = 1;
+
+    // check all the jobs before or at current time.
+    // pick the first incomplete one.
+    // because they're sorted by BT, the first will be shortest
+    for (i; i < schedulerJobs->size(); i++) {
+      currentJob = schedulerJobs->getAt(i);
+      if ((currentJob->arrivalTime <= currentTime) && (!jobCompleted[i])) {
+        // found the shortest incomplete job
+        // do the job
+        incrementCurrentTime = currentJob->burstTime;
+        this->push(currentJob, currentTime+incrementCurrentTime);
+        this->pushHistory(currentJob, currentTime, currentJob->burstTime);
+
+        //mark it as complete
+        jobCompleted[i] = true;
+        --jobsRemaining;
+        break;
+      }
+    }
+
+    currentTime += incrementCurrentTime;
+  }
+}
+
+void scheduler::realSJF(jobs* schedulerJobs, int alpha) {
+}
+
 // addToJobQueue is shared between RR and TB-PQ
 void scheduler::addToJobQueue(jobs* sj, int tj, int* rj, int ct, queueObjList* q) {
   if (*rj > 0) {
