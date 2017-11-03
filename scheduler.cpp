@@ -2,6 +2,7 @@
 #include "jobs.h"
 
 #include "stdio.h"
+#include <map>
 
 scheduler::scheduler()  {}
 
@@ -82,18 +83,14 @@ void scheduler::idealSJF(jobs* schedulerJobs) {
   // This is not a particularly efficient algorithm, I know.
   // But on the scale of scheduling that we're doing in the alpha
   // I don't see it being an issue, do you?
-  //
-  // TODO: rewrite with less loops
   while (jobsRemaining != 0) {
-    int i = 0;
-    job* currentJob;
     int incrementCurrentTime = 1;
 
     // check all the jobs before or at current time.
     // pick the first incomplete one.
     // because they're sorted by BT, the first will be shortest
-    for (; i < schedulerJobs->size(); i++) {
-      currentJob = schedulerJobs->getAt(i);
+    for (int i=0; i < schedulerJobs->size(); i++) {
+      job* currentJob = schedulerJobs->getAt(i);
       if ((currentJob->arrivalTime <= currentTime) && (!jobCompleted[i])) {
         // found the shortest incomplete job
         // do the job
@@ -112,7 +109,66 @@ void scheduler::idealSJF(jobs* schedulerJobs) {
   }
 }
 
-void scheduler::realSJF(jobs* schedulerJobs, int alpha) {
+// Predicts next burst of a process with exponential aging
+// where an average of previous bursts for a process are taken 
+// and the weight of the average decays wtih time
+void scheduler::realSJF(jobs* schedulerJobs, double alpha, int initialBT) {
+  std::map <int, int> predictionMap;
+
+  this->clearScheduler();
+  schedulerJobs->sort(2); //sort by time
+
+  int currentTime = 0;
+  int jobsRemaining = schedulerJobs->size();
+  std::vector<bool> jobCompleted(jobsRemaining, false);
+
+  while (jobsRemaining != 0) {
+    int incrementCurrentTime = 1;
+
+    int shortestJobBT  = -1;
+    int shortestJobIdx = -1;
+
+    for (int i=0; i < schedulerJobs->size(); i++) {
+      if (jobCompleted[i]) { continue; }
+      
+      job* currentJob = schedulerJobs->getAt(i);
+      if (currentJob->arrivalTime <= currentTime) {
+        // create an entry for the job in our map if it doesn't exist yet
+        if (predictionMap.count(currentJob->processNum) == 0) {
+          predictionMap[currentJob->processNum] = initialBT;
+          // printf("Creating new entry for P# %i\n", currentJob->processNum);
+        }
+
+        // if this is the shortest job or first job we're inspecting, it's the new shortest job
+        if ((shortestJobBT == -1) || 
+             predictionMap[currentJob->processNum] < shortestJobBT) {
+
+          // printf("P#%i has a predicted BT of %i, which is better than %i.\n", currentJob->processNum, predictionMap[currentJob->processNum], shortestJobBT);
+          shortestJobBT  = predictionMap[currentJob->processNum];
+          shortestJobIdx = i;
+        }
+      }
+    }
+
+    if (shortestJobIdx != -1) {
+      // run the job & mark it as complete
+      job* jobToDo = schedulerJobs->getAt(shortestJobIdx);
+      incrementCurrentTime = jobToDo->burstTime;
+      this->push(jobToDo, currentTime+incrementCurrentTime);
+      this->pushHistory(jobToDo, currentTime, jobToDo->burstTime);
+
+      jobCompleted[shortestJobIdx] = true;
+      --jobsRemaining;
+
+      // update estimate for next run
+      // predictedBT = alpha*actualPreviousBT + (1 - alpha)*predictedPreviousBT;
+      // printf("Job %i. Prediction: %i, Actual: %i, ", jobToDo->processNum, predictionMap[jobToDo->processNum], jobToDo->burstTime);
+      predictionMap[jobToDo->processNum] = alpha * jobToDo->burstTime + (1 - alpha) * predictionMap[jobToDo->processNum];
+      // printf("New Prediction: %i\n", predictionMap[jobToDo->processNum]);
+    }
+
+    currentTime += incrementCurrentTime;
+  }
 }
 
 // addToJobQueue is shared between RR and TB-PQ

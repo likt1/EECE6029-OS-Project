@@ -61,7 +61,7 @@ public:
 
 	// Shortest Job First
 	void idealSJF(jobs*);
-	void realSJF(jobs*, int);
+	void realSJF(jobs*, double, int);
 	
 	// Round Robin
 	void roundRobin(jobs*);

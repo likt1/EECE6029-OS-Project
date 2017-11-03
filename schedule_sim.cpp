@@ -36,6 +36,12 @@ int main(int argc, char* argv[]) {
     scheduledJobs.idealSJF(&schedulerJobs);
     scheduledJobs.print();
     scheduledJobs.gantt();
+
+    // alpha is a smoothing factor between 0 and 1
+    printf("\nAfter Predictive SJF\nLearning Speed = 0.75\nInitial BT Estimate = 10:\n");
+    scheduledJobs.realSJF(&schedulerJobs, 0.5, 10);
+    scheduledJobs.print();
+    scheduledJobs.gantt();
   }
   else {
     printf("Error opening file specified.\n");
