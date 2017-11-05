@@ -53,7 +53,11 @@ public:
 	void gantt();
 
 	// clears the results and history
-    void clearScheduler();
+  void clearScheduler();
+
+  // returns implemented schedulers
+  // IMPORTANT, MUST UPDATE WHENEVER WE ADD A NEW SCHEDULER
+  int numSchedulers();
 
 	// schedulers
 	// First-In First Out

@@ -34,7 +34,7 @@ void scheduler::pushHistory(job* job, int startTime, int burst) {
   this->history.push_back(newHistory);
 }
 
-//====================== Access functions ======================//
+//====================== Access and count functions ======================//
 result* scheduler::getAt(int index) {
   if (index < this->resultsList.size()) {
     return &(this->resultsList[index]);
@@ -45,6 +45,10 @@ result* scheduler::getAt(int index) {
 
 int scheduler::size() {
   return this->resultsList.size();
+}
+
+int scheduler::numSchedulers() {
+  return 5;
 }
 
 //======================== SCHEDULERS ========================//
