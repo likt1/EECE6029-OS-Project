@@ -2,6 +2,7 @@
 #define JOBS_H
 
 #include <vector>
+#include <cstring>
 
 // job object for a sample job
 struct job {
