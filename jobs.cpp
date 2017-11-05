@@ -21,10 +21,15 @@ jobs::~jobs() {
 bool jobs::init(char* filename) {
   std::string line;
   std::ifstream file(filename);
+  
+  bool mangled = false;
   if (file.is_open()) {
     int jobID = 0;
     while (getline(file, line)) {
-      if (line.find('/') == std::string::npos) { // ignore comments in csv
+      // mangled input checker
+      mangled = line.find('/') != std::string::npos; // ignore comments in csv
+      
+      if (!mangled) { 
         char* tmp = new char[line.length() + 1]; // create new cstring
         std::strcpy(tmp, line.c_str()); // move string into cstring
 
