@@ -177,7 +177,8 @@ void scheduler::realSJF(jobs* schedulerJobs, double alpha, int initialBT) {
 
 // addToJobQueue is shared between RR and TB-PQ
 void scheduler::addToJobQueue(jobs* sj, int tj, int* rj, int ct, queueObjList* q) {
-  if (*rj > 0) {
+  bool complete = false; // make sure all jobs that arrive at the current time are processed
+  while (*rj > 0 && !complete) {
     job* nextReadyJob = sj->getAt(tj - *rj); // get next ready job
     
     // if that job arrived at the current time
@@ -188,6 +189,9 @@ void scheduler::addToJobQueue(jobs* sj, int tj, int* rj, int ct, queueObjList* q
     
       q->push_back(temp); // create a copy and insert into queue
       (*rj)--;
+    }
+    else {
+      complete = true;
     }
   }
 }
