@@ -16,20 +16,20 @@ scheduler::~scheduler() {
 //   to any part of the list.
 
 void scheduler::push(job* job, int ct) {
-  result* newResult = new result();
-  newResult->completedJob   = job;
-  newResult->completionTime = ct;
-  newResult->turnAroundTime = ct - (job->arrivalTime);
-  newResult->waitingTime    = (newResult->turnAroundTime) - (job->burstTime);
+  result newResult;
+  newResult.completedJob   = job;
+  newResult.completionTime = ct;
+  newResult.turnAroundTime = ct - (job->arrivalTime);
+  newResult.waitingTime    = (newResult.turnAroundTime) - (job->burstTime);
   
   this->resultsList.push_back(newResult);
 }
 
 void scheduler::pushHistory(job* job, int startTime, int burst) {
-  historyObj* newHistory = new historyObj();
-  newHistory->orgJbPntr  = job;
-  newHistory->stTime     = startTime;
-  newHistory->burst      = burst;
+  historyObj newHistory;
+  newHistory.orgJbPntr  = job;
+  newHistory.stTime     = startTime;
+  newHistory.burst      = burst;
 
   this->history.push_back(newHistory);
 }
@@ -37,7 +37,7 @@ void scheduler::pushHistory(job* job, int startTime, int burst) {
 //====================== Access functions ======================//
 result* scheduler::getAt(int index) {
   if (index < this->resultsList.size()) {
-    return this->resultsList[index];
+    return &(this->resultsList[index]);
   }
   
   return NULL;
@@ -363,10 +363,10 @@ void scheduler::gantt() {
   printf("\nGANTT beta\n");
 
   for (int i=0; i < this->history.size(); i++) {
-    historyObj* element   = this->history[i];
-    job*        job       = element->orgJbPntr;
-    int         startTime = element->stTime;
-    int         burst     = element->burst;
+    historyObj  element   = this->history[i];
+    job*        job       = element.orgJbPntr;
+    int         startTime = element.stTime;
+    int         burst     = element.burst;
 
     if (gTime < startTime) {
       printf("+-----------+\n| ti = %-4d |\n|           |\n|           |\n| tf = %-4d |\n", gTime, startTime);
@@ -387,13 +387,6 @@ void scheduler::gantt() {
 
 //====================== Clear functions ======================//
 void scheduler::clearScheduler() {
-  for (int i = 0; i < this->resultsList.size(); i++) {
-    delete this->resultsList[i];
-  }
   this->resultsList.clear();
-
-  for (int i = 0; i < this->history.size(); i++) {
-    delete this->history[i];
-  }
   this->history.clear();
 }

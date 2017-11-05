@@ -29,8 +29,8 @@ struct historyObj {
 class scheduler {
 
 private:
-	std::vector<result*> resultsList;
-	std::vector<historyObj*> history;
+	std::vector<result> resultsList;
+	std::vector<historyObj> history;
 
 public:
 	scheduler();
