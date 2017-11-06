@@ -2,6 +2,8 @@ CC=gcc
 CFLAGS=-I.
 DEPS = jobs.h
 
+CXXFLAGS=-std=c++11
+
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
