@@ -154,57 +154,50 @@ bool jobs::sort(int method) {
 //   improve to a custom set form but this works for now and we
 //   don't need that functionality yet.
 bool jobs::compByProcess(job* first, job* sec) {
-  if (first->processNum == sec->processNum) {
-    if (first->arrivalTime == sec->arrivalTime) {
-      return compByBurst(first, sec);
-    }
-    return compByArrival(first, sec);
-  }
-  return first->processNum < sec->processNum;
+  return compare(first, sec, 1);
 }
 
 bool jobs::compByArrival(job* first, job* sec) {
-  if (first->arrivalTime == sec->arrivalTime) {
-    if (first->processNum == sec->processNum) {
-      return compByBurst(first, sec);
-    }
-    return compByProcess(first, sec);
-  }
-  return first->arrivalTime < sec->arrivalTime;
+  return compare(first, sec, 2);
 }
 
 bool jobs::compByBurst(job* first, job* sec) {
-  if (first->burstTime == sec->burstTime) {
-    if (first->arrivalTime == sec->arrivalTime) {
-      return compByProcess(first, sec);
-    }
-    return compByArrival(first, sec);
-  }
-  return first->burstTime < sec->burstTime;
-}
-
-bool jobs::equals(job* first, job* sec) {
-  return first->processNum == sec->processNum &&
-    first->arrivalTime == sec->arrivalTime &&
-    first->burstTime == sec->burstTime;
+  return compare(first, sec, 3);
 }
 
 bool jobs::compare(job* first, job* sec, int mode) {
-  if (equals(first, sec)) {
-    return false;
+  std::vector<int> order = {2, 0, 3, 1, 4}; // by arrival time is default
+  switch(mode) { // set up the order of which to check
+    case 1: // by process num
+      order = {0, 2, 3, 1, 4};
+      break;
+    case 3: // by burst time
+      order = {3, 2, 0, 1, 4};
+      break;
   }
   
-  switch(mode) {
-    case 1:
-      return compByProcess(first, sec);
-    case 2:
-      return compByArrival(first, sec);
-    case 3:
-      return compByBurst(first, sec);
+  bool result = false;
+  for (int i = 0; i < order.size() && !result; i++) {
+    switch(order[i]) {
+      case 0: // comp process
+        result = first->processNum < sec->processNum;
+      break;
+      case 1: // comp ID
+        result = first->jobID < sec->jobID;
+      break;
+      case 2: // comp arrival
+        result = first->arrivalTime < sec->arrivalTime;
+      break;
+      case 3: // comp burst
+        result = first->burstTime < sec->burstTime;
+      break;
+      case 4: // comp priority
+        result = first->priority < sec->priority;
+      break;
+    }
   }
   
-  // mode out of range
-  return false;
+  return result;
 }
 
 //====================== Clear functions ======================//

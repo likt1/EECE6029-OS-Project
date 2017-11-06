@@ -6,11 +6,11 @@
 
 // job object for a sample job
 struct job {
-  int processNum;
-  int jobID;
-  int arrivalTime;
-  int burstTime;
-  int priority;
+  int processNum;  // 0
+  int jobID;       // 1
+  int arrivalTime; // 2
+  int burstTime;   // 3
+  int priority;    // 4
 };
 
 // jobs wrapper object. Manages the import and storage of jobs as they come
@@ -53,8 +53,7 @@ public:
   
   // sorts the list based on 1:process, 2:arrivalT, 3:burstT
   bool sort(int); // Returns success/fail
-  bool compare(job*, job*, int);
-  bool equals(job*, job*);
+  static bool compare(job*, job*, int);
   
   // clears the list
   void clearList();
