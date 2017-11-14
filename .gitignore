@@ -6,6 +6,5 @@
 
 # program gui output
 gantt.csv
-gantt.html
 results.csv
-results.html
+*.html
