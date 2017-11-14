@@ -52,8 +52,11 @@ public:
 	// outputs
 	void print();
 	std::string printToFile();
+	void guiPrint(std::string pathToCSV);
+
 	void gantt();
 	std::string ganttToFile();
+	void guiGantt(std::string pathToCSV);
 
 	// clears the results and history
   void clearScheduler();

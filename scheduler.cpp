@@ -370,7 +370,7 @@ void scheduler::print() {
 
 std::string scheduler::printToFile() {
   std::ofstream outputFile;
-  std::string filename = "results.csv";
+  std::string filename = "output/results.csv";
 
   // create and open the csv
   outputFile.open(filename, std::ios::out);
@@ -408,6 +408,8 @@ std::string scheduler::printToFile() {
   return filename;
 }
 
+void scheduler::guiPrint(std::string pathToCSV) {}
+
 void scheduler::gantt() {
   int gTime = 0;
 
@@ -438,7 +440,7 @@ void scheduler::gantt() {
 
 std::string scheduler::ganttToFile() {
   std::ofstream outputFile;
-  std::string filename = "gantt.csv";
+  std::string filename = "output/gantt.csv";
 
   // create and open the csv
   outputFile.open(filename, std::ios::out);
@@ -483,6 +485,10 @@ std::string scheduler::ganttToFile() {
   outputFile.close();
 
   return filename;
+}
+
+void scheduler::guiGantt(std::string pathToCSV) {
+
 }
 
 //====================== Clear functions ======================//

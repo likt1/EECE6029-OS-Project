@@ -4,6 +4,8 @@
 # output program
 *.out
 
-# program csv output
+# program gui output
 gantt.csv
+gantt.html
 results.csv
+results.html
