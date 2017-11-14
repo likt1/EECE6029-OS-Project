@@ -21,7 +21,8 @@ void runSchedule(scheduler* scheduler, jobs* jobs, int type) {
       printf("\nAfter FIFO:\n");
       scheduler->FIFO(jobs);
       scheduler->print();
-      scheduler->gantt();
+      scheduler->ganttToFile();
+      scheduler->printToFile();
       break;
     case 1:
       printf("\nAfter Round Robin:\n");

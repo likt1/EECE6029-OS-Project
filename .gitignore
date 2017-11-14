@@ -3,3 +3,7 @@
 
 # output program
 *.out
+
+# program csv output
+gantt.csv
+results.csv

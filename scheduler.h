@@ -4,6 +4,7 @@
 #include "jobs.h"
 #include <vector>
 #include <list>
+#include <string>
 
 #define queueObjList std::list<queueObj>
 
@@ -50,7 +51,9 @@ public:
 
 	// outputs
 	void print();
+	std::string printToFile();
 	void gantt();
+	std::string ganttToFile();
 
 	// clears the results and history
   void clearScheduler();

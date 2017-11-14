@@ -2,6 +2,9 @@
 #include "jobs.h"
 
 #include "stdio.h"
+#include <iostream>
+#include <fstream>
+#include <string>
 #include <map>
 
 scheduler::scheduler()  {}
@@ -365,10 +368,50 @@ void scheduler::print() {
   printf("AVERAGE TURN-AROUND TIME: %d\nAVERAGE WAITING TIME: %d\n", tatSum/this->size(), wtSum/this->size());
 }
 
+std::string scheduler::printToFile() {
+  std::ofstream outputFile;
+  std::string filename = "results.csv";
+
+  // create and open the csv
+  outputFile.open(filename, std::ios::out);
+
+  // throw error if file not open
+  if(!outputFile) { std::cerr << "Can't open output file."<<std::endl; exit(1); }
+  
+  // write headers
+  outputFile << "Process"     << "," 
+             << "ID"          << "," 
+             << "Priority"    << "," 
+             << "Arrival"     << ","
+             << "Burst"       << "," 
+             << "Completion"  << "," 
+             << "Turn-Around" << "," 
+             << "Waiting"     << std::endl;
+
+  // write data to file
+  for (int i = 0; i < this->size(); i++) {
+    result* element = this->getAt(i);
+    job* completedJob = element->completedJob;
+    outputFile << completedJob->processNum  << ","
+               << completedJob->jobID       << "," 
+               << completedJob->priority    << "," 
+               << completedJob->arrivalTime << "," 
+               << completedJob->burstTime   << ","
+               << element->completionTime   << "," 
+               << element->turnAroundTime   << "," 
+               << element->waitingTime      << std::endl;
+  }
+
+  // close file
+  outputFile.close();
+
+  return filename;
+}
+
 void scheduler::gantt() {
   int gTime = 0;
 
-  printf("\nGANTT beta\n");
+  printf("\nGANTT Chart\n");
 
   for (int i=0; i < this->history.size(); i++) {
     historyObj  element   = this->history[i];
@@ -391,6 +434,55 @@ void scheduler::gantt() {
   }
 
   printf("+-----------+\n");
+}
+
+std::string scheduler::ganttToFile() {
+  std::ofstream outputFile;
+  std::string filename = "gantt.csv";
+
+  // create and open the csv
+  outputFile.open(filename, std::ios::out);
+
+  // throw error if file not open
+  if(!outputFile) { std::cerr << "Can't open output file."<<std::endl; exit(1); }
+  
+  // write headers
+  outputFile << "Process"     << "," 
+             << "ID"          << "," 
+             << "Start"       << "," 
+             << "End"         << std::endl;
+
+  // write data to file
+  int gTime = 0;
+  for (int i=0; i < this->history.size(); i++) {
+    historyObj  element   = this->history[i];
+    job*        job       = element.orgJbPntr;
+    int         startTime = element.stTime;
+    int         burst     = element.burst;
+
+    if (gTime < startTime) {
+      outputFile << ""        << ","
+                 << ""        << "," 
+                 << gTime     << "," 
+                 << startTime << std::endl;
+      gTime = startTime;
+
+    } else if (gTime > startTime) {
+      printf("\nERROR: Job begins while another job is executing, I think?\n");
+      exit(1);
+    }
+
+    outputFile << job->processNum << ","
+               << job->jobID      << "," 
+               << gTime           << "," 
+               << gTime+burst     << std::endl;
+    gTime += burst;
+  }
+
+  // close file
+  outputFile.close();
+
+  return filename;
 }
 
 //====================== Clear functions ======================//
