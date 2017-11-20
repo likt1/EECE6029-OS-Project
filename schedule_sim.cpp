@@ -50,7 +50,6 @@ void runSchedule(scheduler* scheduler, jobs* jobs, int type) {
       scheduler->gantt();
       break;
     case 5:
-      // alpha is a smoothing factor between 0 and 1
       printf("\nAfter Multilvl Feedback Queue\nQueue number = 3\nPreemption = {15, 30, 50}:\n");
       scheduler->MLFQ(jobs);
       scheduler->print();

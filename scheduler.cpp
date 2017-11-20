@@ -395,6 +395,7 @@ void scheduler::MLFQ(jobs* schedulerJobs) {
                           timeWorked);
         queues[workingQueue].erase(working);
         isWorking = false;
+        timeWorked = 0; // reset time worked
       }
       
       // if we didn't complete it, but the time quantum is reached, preempt to the lower queue
@@ -404,6 +405,7 @@ void scheduler::MLFQ(jobs* schedulerJobs) {
         int lrQueue = (workingQueue + 1 == numQueues) ? workingQueue : workingQueue + 1;
         queues[lrQueue].splice(queues[lrQueue].end(), queues[workingQueue], working);
         isWorking = false;
+        timeWorked = 0; // reset time worked
       }
     }
     
@@ -419,6 +421,14 @@ void scheduler::MLFQ(jobs* schedulerJobs) {
     }
     
     currentTime++; // inc time
+    /*if (currentTime > 200) {
+      break;
+    }
+    printf("ct:%d tj:%d rj:%d \n", currentTime, totalJobs, remainingJobs);
+    printf("q1s:%d q2s:%d q3s:%d \n", queues[0].size(), queues[1].size(), queues[2].size());
+    */
+    
+    
   }
 }
 
