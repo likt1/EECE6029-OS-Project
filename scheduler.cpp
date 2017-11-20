@@ -278,7 +278,7 @@ int scheduler::calcPri(int currentTime, job* job, int minWait) {
 // Non-preemptive priority scheduler based on age
 void scheduler::ageBasedPri(jobs* schedulerJobs) {
 	this->clearScheduler();
-  schedulerJobs->sort(2); // sort on arrival time
+  //schedulerJobs->sort(2); // sort on arrival time
 
   int currentTime = 0; // system clock
   int totalJobs = schedulerJobs->size();
@@ -346,7 +346,7 @@ void scheduler::ageBasedPri(jobs* schedulerJobs) {
 // Multi level feedback queue
 void scheduler::MLFQ(jobs* schedulerJobs) {
   this->clearScheduler();
-  schedulerJobs->sort(2); // sort on arrival time
+  //schedulerJobs->sort(2); // sort on arrival time
 
   int numQueues = 3;
   int currentTime = 0; // system clock
