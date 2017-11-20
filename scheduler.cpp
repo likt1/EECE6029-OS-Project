@@ -181,8 +181,8 @@ void scheduler::realSJF(jobs* schedulerJobs, double alpha, int initialBT) {
 // addToJobQueue is shared between RR and TB-PQ
 void scheduler::addToJobQueue(jobs* sj, int tj, int* rj, int ct, queueObjList* q) {
   bool complete = false; // make sure all jobs that arrive at the current time are processed
-  while (*rj > 0 && !complete) {
-    job* nextReadyJob = sj->getAt(tj - *rj); // get next ready job
+  while ((*rj) > 0 && !complete) {
+    job* nextReadyJob = sj->getAt(tj - (*rj)); // get next ready job
     
     // if that job arrived at the current time
     if (nextReadyJob->arrivalTime == ct) { 
@@ -207,7 +207,7 @@ void scheduler::addToJobQueue(jobs* sj, int tj, int* rj, int ct, queueObjList* q
 //    4. End loop of all jobs are finished
 void scheduler::roundRobin(jobs* schedulerJobs) {
   this->clearScheduler();
-  schedulerJobs->sort(2); // sort on arrival time
+  //schedulerJobs->sort(2); // sort on arrival time
 
   int currentTime = 0; // system clock
   int totalJobs = schedulerJobs->size();
@@ -340,6 +340,85 @@ void scheduler::ageBasedPri(jobs* schedulerJobs) {
     }
     
     currentTime++;
+  }
+}
+
+// Multi level feedback queue
+void scheduler::MLFQ(jobs* schedulerJobs) {
+  this->clearScheduler();
+  schedulerJobs->sort(2); // sort on arrival time
+
+  int numQueues = 3;
+  int currentTime = 0; // system clock
+  int totalJobs = schedulerJobs->size();
+  int remainingJobs = totalJobs;
+  int timeQuantum[] = {15, 30, 50}; // time to take on job before preemption for each queue
+  bool running = true;
+  
+  queueObjList queues[numQueues]; // 3 levels, std::list<queueObj>
+  queueObjList::iterator working; // which job we are currently working on
+  bool isWorking = false;
+  int timeWorked = 0;
+  int workingQueue = 0;
+
+  while (running) {
+    // Make sure we are working on the highest queue job and preempt if we aren't
+    //  1. begin work on highest queue job
+    bool found = false;
+    int queueLim = numQueues; // Search all the queues...
+    if (isWorking) { // ...only if we aren't working
+      queueLim = workingQueue;
+    }
+    for (int i = 0; i < queueLim && !found; i++) {
+      if (!queues[i].empty()) {
+        if (isWorking) { // preempt if we are working
+          queues[workingQueue].splice(queues[workingQueue].end(), queues[workingQueue], working);
+        }
+        // begin() returns iterator, which is basically a pointer to the element
+        working = queues[i].begin();
+        workingQueue = i;
+        isWorking = true;
+        timeWorked = 0; // reset time worked
+        found = true; // stop searching
+      }
+    }
+    
+    // 2. work on job if we are working on a job.
+    if (isWorking) {
+      (*working).queueJob.burstTime--;
+      timeWorked++;
+      
+      // if we complete a job then add to results
+      if ((*working).queueJob.burstTime == 0) {
+        this->push((*working).originalJobPointer, currentTime);
+        this->pushHistory((*working).originalJobPointer, currentTime - timeWorked, 
+                          timeWorked);
+        queues[workingQueue].erase(working);
+        isWorking = false;
+      }
+      
+      // if we didn't complete it, but the time quantum is reached, preempt to the lower queue
+      if (timeWorked == timeQuantum[workingQueue]) {
+        this->pushHistory((*working).originalJobPointer, currentTime - timeWorked, 
+                          timeWorked);
+        int lrQueue = (workingQueue + 1 == numQueues) ? workingQueue : workingQueue + 1;
+        queues[lrQueue].splice(queues[lrQueue].end(), queues[workingQueue], working);
+        isWorking = false;
+      }
+    }
+    
+    // 3. if next ready job has arrived given the current time, add to topmost queue
+    this->addToJobQueue(schedulerJobs, totalJobs, &remainingJobs, currentTime, &queues[0]);
+    
+    // 4. if all jobs are finished
+    if (!isWorking && remainingJobs == 0) {
+      running = false;
+      for (int i = 0; i < numQueues && !running; i++) {
+        running = !queues[i].empty();
+      }
+    }
+    
+    currentTime++; // inc time
   }
 }
 

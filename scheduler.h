@@ -80,6 +80,9 @@ public:
 	void ageBasedPri(jobs*);
 	int calcPri(int, job*, int);
 	
+	// Multi Lvl Feedback Queue
+	void MLFQ(jobs*);
+	
 	// Shared code between schedulers
 	void addToJobQueue(jobs*, int, int*, int, queueObjList*);
 };

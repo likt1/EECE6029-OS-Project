@@ -49,6 +49,13 @@ void runSchedule(scheduler* scheduler, jobs* jobs, int type) {
       scheduler->print();
       scheduler->gantt();
       break;
+    case 5:
+      // alpha is a smoothing factor between 0 and 1
+      printf("\nAfter Multilvl Feedback Queue\nQueue number = 3\nPreemption = {15, 30, 50}:\n");
+      scheduler->MLFQ(jobs);
+      scheduler->print();
+      scheduler->gantt();
+      break;
   }
 }
 
@@ -64,9 +71,10 @@ int main(int argc, char* argv[]) {
     if (strMatch(file, "help")) { // print out help text
       printf("Just specify a csv jobs file to run every scheduler.\n");
       printf("To run a specific scheduler, add the following after the file name:\n");
-      printf("fifo, rr, abp, isjf, psjf\n\n");
+      printf("fifo, rr, abp, isjf, psjf, mlfq\n\n");
       printf("Schedulers Implemented:\n");
-      printf("First In First Out, Round Robin, Age Based Priority, Ideal Shortest Job First, Predictive Shortest Job First.\n");
+      printf("First In First Out\nRound Robin\nAge Based Priority\nIdeal Shortest Job First\n\
+Predictive Shortest Job First\nMultilevel Feedback Queue.\n");
       return 0;
     }
     
@@ -105,6 +113,9 @@ int main(int argc, char* argv[]) {
       }
       else if(strMatch(modeStr, "psjf")) {
         runSchedule(&scheduledJobs, &schedulerJobs, 4);
+      }
+      else if(strMatch(modeStr, "mlfq")) {
+        runSchedule(&scheduledJobs, &schedulerJobs, 5);
       }
       else {
         printf("Unknown scheduler specified.\nTry help for more info.\n");
