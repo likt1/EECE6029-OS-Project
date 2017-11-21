@@ -189,6 +189,7 @@ void scheduler::addToJobQueue(jobs* sj, int tj, int* rj, int ct, queueObjList* q
       queueObj temp; // construct queueJob
       temp.originalJobPointer = nextReadyJob;
       temp.queueJob = *nextReadyJob;
+      temp.insertTime = ct;
     
       q->push_back(temp); // create a copy and insert into queue
       (*rj)--;
@@ -353,6 +354,7 @@ void scheduler::MLFQ(jobs* schedulerJobs) {
   int totalJobs = schedulerJobs->size();
   int remainingJobs = totalJobs;
   int timeQuantum[] = {15, 30, 50}; // time to take on job before preemption for each queue
+  int maxWaitTime = 120;
   bool running = true;
   
   queueObjList queues[numQueues]; // 3 levels, std::list<queueObj>
@@ -386,6 +388,8 @@ void scheduler::MLFQ(jobs* schedulerJobs) {
     // 2. work on job if we are working on a job.
     if (isWorking) {
       (*working).queueJob.burstTime--;
+      (*working).insertTime = currentTime; // reset queue change time as we are working on it atm
+      //printf("q: %d proc: %d remaining: %d\n", workingQueue, (*working).queueJob.jobID, (*working).queueJob.burstTime);
       timeWorked++;
       
       // if we complete a job then add to results
@@ -412,6 +416,28 @@ void scheduler::MLFQ(jobs* schedulerJobs) {
     // 3. if next ready job has arrived given the current time, add to topmost queue
     this->addToJobQueue(schedulerJobs, totalJobs, &remainingJobs, currentTime, &queues[0]);
     
+    // 3.5. promote waiting jobs
+    for (int i = 1; i < numQueues; i++) {
+      if (!queues[i].empty()) {
+        queueObjList::iterator it = queues[i].begin();
+        for (; it != queues[i].end();) {
+          int waitingTime = currentTime - (*it).insertTime;
+        
+          if (waitingTime > maxWaitTime) {
+            queueObjList::iterator next = it;
+            ++next;
+            (*it).insertTime = currentTime;
+            queues[i - 1].splice(queues[i - 1].end(), queues[i], it);
+            printf("promoting proc:%d to %d from %d with %d waitTime\n", (*it).queueJob.jobID, i - 1, i, waitingTime);
+            it = next;
+          }
+          else {
+            ++it;
+          }
+        }
+      }
+    }
+    
     // 4. if all jobs are finished
     if (!isWorking && remainingJobs == 0) {
       running = false;
@@ -427,8 +453,6 @@ void scheduler::MLFQ(jobs* schedulerJobs) {
     printf("ct:%d tj:%d rj:%d \n", currentTime, totalJobs, remainingJobs);
     printf("q1s:%d q2s:%d q3s:%d \n", queues[0].size(), queues[1].size(), queues[2].size());
     */
-    
-    
   }
 }
 

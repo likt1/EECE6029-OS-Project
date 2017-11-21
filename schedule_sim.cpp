@@ -50,10 +50,10 @@ void runSchedule(scheduler* scheduler, jobs* jobs, int type) {
       scheduler->gantt();
       break;
     case 5:
-      printf("\nAfter Multilvl Feedback Queue\nQueue number = 3\nPreemption = {15, 30, 50}:\n");
+      printf("\nAfter Multilvl Feedback Queue\nQueue number = 3\nPreemption = {15, 30, 50}:\nMax wait = 120:\n");
       scheduler->MLFQ(jobs);
       scheduler->print();
-      scheduler->gantt();
+      //scheduler->gantt();
       break;
   }
 }

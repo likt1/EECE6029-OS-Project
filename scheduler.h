@@ -12,6 +12,7 @@
 struct queueObj {
   job* originalJobPointer;
   job queueJob;
+  int insertTime;
 };
 
 struct result {
