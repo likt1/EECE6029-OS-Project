@@ -118,6 +118,10 @@ Predictive Shortest Job First\nMultilevel Feedback Queue.\n");
       else if(strMatch(modeStr, "mlfq")) {
         runSchedule(&scheduledJobs, &schedulerJobs, 5);
       }
+      else if(strMatch(modeStr, "sort")) {
+        schedulerJobs.sort(1);
+        schedulerJobs.print();
+      }
       else {
         printf("Unknown scheduler specified.\nTry help for more info.\n");
       }

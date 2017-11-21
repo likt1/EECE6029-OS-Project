@@ -181,18 +181,33 @@ bool jobs::compare(job* first, job* sec, int mode) {
     switch(order[i]) {
       case 0: // comp process
         result = first->processNum < sec->processNum;
+        if (!result && first->processNum != sec->processNum) {
+          return false;
+        }
       break;
       case 1: // comp ID
         result = first->jobID < sec->jobID;
+        if (!result && first->jobID != sec->jobID) {
+          return false;
+        }
       break;
       case 2: // comp arrival
         result = first->arrivalTime < sec->arrivalTime;
+        if (!result && first->arrivalTime != sec->arrivalTime) {
+          return false;
+        }
       break;
       case 3: // comp burst
         result = first->burstTime < sec->burstTime;
+        if (!result && first->burstTime != sec->burstTime) {
+          return false;
+        }
       break;
       case 4: // comp priority
         result = first->priority < sec->priority;
+        if (!result && first->priority != sec->priority) {
+          return false;
+        }
       break;
     }
   }
