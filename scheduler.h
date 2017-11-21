@@ -75,14 +75,14 @@ public:
 	void realSJF(jobs*, double, int);
 	
 	// Round Robin
-	void roundRobin(jobs*);
+	void roundRobin(jobs*, int);
 	
 	// Age Based Priority
-	void ageBasedPri(jobs*);
+	void ageBasedPri(jobs*, int);
 	int calcPri(int, job*, int);
 	
 	// Multi Lvl Feedback Queue
-	void MLFQ(jobs*);
+	void MLFQ(jobs*, int, int*, int);
 	
 	// Shared code between schedulers
 	void addToJobQueue(jobs*, int, int*, int, queueObjList*);

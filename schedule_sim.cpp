@@ -25,14 +25,14 @@ void runSchedule(scheduler* scheduler, jobs* jobs, int type) {
       scheduler->printToFile();
       break;
     case 1:
-      printf("\nAfter Round Robin:\n");
-      scheduler->roundRobin(jobs);
+      printf("\nAfter Round Robin\nTime quantum = 5:\n");
+      scheduler->roundRobin(jobs, 5);
       scheduler->print();
       scheduler->gantt();
       break;
     case 2:
-      printf("\nAfter Age Based Pri:\n");
-      scheduler->ageBasedPri(jobs);
+      printf("\nAfter Age Based Pri\nMax wait for priority upgrade = 20:\n");
+      scheduler->ageBasedPri(jobs, 20);
       scheduler->print();
       scheduler->gantt();
       break;
@@ -50,10 +50,12 @@ void runSchedule(scheduler* scheduler, jobs* jobs, int type) {
       scheduler->gantt();
       break;
     case 5:
-      printf("\nAfter Multilvl Feedback Queue\nQueue number = 3\nPreemption = {15, 30, 50}:\nMax wait = 120:\n");
-      scheduler->MLFQ(jobs);
+      printf("\nAfter Multilvl Feedback Queue\nQueue number = 3\nPreemption = {15, 30, \
+50}:\nMax wait for queue upgrade = 200:\n");
+      int queueTimeQuantum[] = {15, 30, 50};
+      scheduler->MLFQ(jobs, 3, queueTimeQuantum, 200);
       scheduler->print();
-      //scheduler->gantt();
+      scheduler->gantt();
       break;
   }
 }

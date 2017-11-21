@@ -206,14 +206,14 @@ void scheduler::addToJobQueue(jobs* sj, int tj, int* rj, int ct, queueObjList* q
 //    2. Work on the job and handle whatever happens for that job
 //    3. Add incoming jobs to the internal job queue
 //    4. End loop of all jobs are finished
-void scheduler::roundRobin(jobs* schedulerJobs) {
+void scheduler::roundRobin(jobs* schedulerJobs, int tq) {
   this->clearScheduler();
   //schedulerJobs->sort(2); // sort on arrival time
 
   int currentTime = 0; // system clock
   int totalJobs = schedulerJobs->size();
   int remainingJobs = totalJobs;
-  int timeQuantum = 5; // time to take on job before preemption
+  int timeQuantum = tq; // time to take on job before preemption
   int timeWorked = 0;
   bool running = true;
   bool isWorking = false;
@@ -268,8 +268,8 @@ void scheduler::roundRobin(jobs* schedulerJobs) {
 
 // supporting functions for age based priority
 // Calculate priority given the amount of time the job has been waiting
-int scheduler::calcPri(int currentTime, job* job, int minWait) {
-  int updatedPri = job->priority - (currentTime - job->arrivalTime)/minWait;
+int scheduler::calcPri(int currentTime, job* job, int maxWait) {
+  int updatedPri = job->priority - (currentTime - job->arrivalTime)/maxWait;
   if (updatedPri < 0) {
     return 0;
   }
@@ -277,13 +277,14 @@ int scheduler::calcPri(int currentTime, job* job, int minWait) {
 }
 
 // Non-preemptive priority scheduler based on age
-void scheduler::ageBasedPri(jobs* schedulerJobs) {
+void scheduler::ageBasedPri(jobs* schedulerJobs, int mw) {
 	this->clearScheduler();
   //schedulerJobs->sort(2); // sort on arrival time
 
   int currentTime = 0; // system clock
   int totalJobs = schedulerJobs->size();
   int remainingJobs = totalJobs;
+  int maxWait = mw;
   bool running = true;
   bool isWorking = false;
   queueObjList queue; // std::list<queueObj>
@@ -301,8 +302,8 @@ void scheduler::ageBasedPri(jobs* schedulerJobs) {
         job* hJob = &((*highest).queueJob);
         job* itJob = &((*next).queueJob);
         
-        int hPri = this->calcPri(currentTime, hJob, 20);
-        int itPri = this->calcPri(currentTime, itJob, 20);
+        int hPri = this->calcPri(currentTime, hJob, maxWait);
+        int itPri = this->calcPri(currentTime, itJob, maxWait);
       
         if (hPri > itPri || 
             (hPri == itPri && 
@@ -345,16 +346,16 @@ void scheduler::ageBasedPri(jobs* schedulerJobs) {
 }
 
 // Multi level feedback queue
-void scheduler::MLFQ(jobs* schedulerJobs) {
+void scheduler::MLFQ(jobs* schedulerJobs, int nq, int* tq, int mw) {
   this->clearScheduler();
   //schedulerJobs->sort(2); // sort on arrival time
 
-  int numQueues = 3;
+  int numQueues = nq;
   int currentTime = 0; // system clock
   int totalJobs = schedulerJobs->size();
   int remainingJobs = totalJobs;
-  int timeQuantum[] = {15, 30, 50}; // time to take on job before preemption for each queue
-  int maxWaitTime = 120;
+  int* timeQuantum = tq; // time to take on job before preemption for each queue
+  int maxWaitTime = mw;
   bool running = true;
   
   queueObjList queues[numQueues]; // 3 levels, std::list<queueObj>
@@ -428,7 +429,7 @@ void scheduler::MLFQ(jobs* schedulerJobs) {
             ++next;
             (*it).insertTime = currentTime;
             queues[i - 1].splice(queues[i - 1].end(), queues[i], it);
-            printf("promoting proc:%d to %d from %d with %d waitTime\n", (*it).queueJob.jobID, i - 1, i, waitingTime);
+            //printf("promoting proc:%d to %d from %d with %d waitTime\n", (*it).queueJob.jobID, i - 1, i, waitingTime);
             it = next;
           }
           else {
