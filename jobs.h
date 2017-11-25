@@ -4,6 +4,8 @@
 #include <vector>
 #include <cstring>
 
+#include <cstdlib>
+
 // job object for a sample job
 struct job {
   int processNum;  // 0

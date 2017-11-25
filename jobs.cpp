@@ -4,8 +4,6 @@
 #include <string>
 #include <algorithm>
 
-#include <cstdlib>
-
 #include "stdio.h"
 
 //====================== Init functions ======================//
