@@ -208,7 +208,7 @@ void scheduler::addToJobQueue(jobs* sj, int tj, int* rj, int ct, queueObjList* q
 //    4. End loop of all jobs are finished
 void scheduler::roundRobin(jobs* schedulerJobs, int tq) {
   this->clearScheduler();
-  //schedulerJobs->sort(2); // sort on arrival time
+  schedulerJobs->sort(2); // sort on arrival time
 
   int currentTime = 0; // system clock
   int totalJobs = schedulerJobs->size();
@@ -279,7 +279,7 @@ int scheduler::calcPri(int currentTime, job* job, int maxWait) {
 // Non-preemptive priority scheduler based on age
 void scheduler::ageBasedPri(jobs* schedulerJobs, int mw) {
 	this->clearScheduler();
-  //schedulerJobs->sort(2); // sort on arrival time
+  schedulerJobs->sort(2); // sort on arrival time
 
   int currentTime = 0; // system clock
   int totalJobs = schedulerJobs->size();
@@ -348,7 +348,7 @@ void scheduler::ageBasedPri(jobs* schedulerJobs, int mw) {
 // Multi level feedback queue
 void scheduler::MLFQ(jobs* schedulerJobs, int nq, int* tq, int mw) {
   this->clearScheduler();
-  //schedulerJobs->sort(2); // sort on arrival time
+  schedulerJobs->sort(2); // sort on arrival time
 
   int numQueues = nq;
   int currentTime = 0; // system clock
