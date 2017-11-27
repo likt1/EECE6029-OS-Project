@@ -52,11 +52,11 @@ public:
 
 	// outputs
 	void print();
-	std::string printToFile();
+	std::string printToFile(std::string filename);
 	void guiPrint(std::string pathToCSV);
 
 	void gantt();
-	std::string ganttToFile();
+	std::string ganttToFile(std::string filename);
 	void guiGantt(std::string pathToCSV);
 
 	// clears the results and history

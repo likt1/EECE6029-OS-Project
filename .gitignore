@@ -5,6 +5,4 @@
 *.out
 
 # program gui output
-gantt.csv
-results.csv
-*.html
+output/*

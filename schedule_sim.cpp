@@ -20,11 +20,17 @@ void runSchedule(scheduler* scheduler, jobs* jobs, int type, int arg, double dAr
     case 0:
       printf("\nAfter FIFO:\n");
       scheduler->FIFO(jobs);
+      scheduler->print();
+      scheduler->guiGantt(scheduler->ganttToFile("gantt_fifo.csv"));
+      scheduler->guiPrint(scheduler->printToFile("results_fifo.csv"));
       break;
     case 1:
       printf("\nAfter Round Robin\nTime quantum = %d:\n", arg);
       if (arg > 0) {
         scheduler->roundRobin(jobs, arg);
+        scheduler->print();
+        scheduler->guiGantt(scheduler->ganttToFile("gantt_rr.csv"));
+        scheduler->guiPrint(scheduler->printToFile("results_rr.csv"));
       }
       else {
         printf("\nTime quantum must be larger than 0\n");
@@ -34,6 +40,9 @@ void runSchedule(scheduler* scheduler, jobs* jobs, int type, int arg, double dAr
       printf("\nAfter Age Based Pri\nMax wait for priority upgrade = %d:\n", arg);
       if (arg > 0) {
         scheduler->ageBasedPri(jobs, arg);
+        scheduler->print();
+        scheduler->guiGantt(scheduler->ganttToFile("gantt_abp.csv"));
+        scheduler->guiPrint(scheduler->printToFile("results_abp.csv"));
       }
       else {
         printf("\nMax wait for priority upgrade must be larger than 0\n");
@@ -42,12 +51,18 @@ void runSchedule(scheduler* scheduler, jobs* jobs, int type, int arg, double dAr
     case 3:
       printf("\nAfter Ideal SJF:\n");
       scheduler->idealSJF(jobs);
+      scheduler->print();
+      scheduler->guiGantt(scheduler->ganttToFile("gantt_isjf.csv"));
+      scheduler->guiPrint(scheduler->printToFile("results_isjf.csv"));
       break;
     case 4:
       // alpha is a smoothing factor between 0 and 1
       printf("\nAfter Predictive SJF\nLearning Speed = %f\n Initial BT Estimate = %d:\n", dArg, arg);
       if (dArg > 0 && dArg < 1) {
         scheduler->realSJF(jobs, dArg, arg);
+        scheduler->print();
+        scheduler->guiGantt(scheduler->ganttToFile("gantt_psjf.csv"));
+        scheduler->guiPrint(scheduler->printToFile("results_psjf.csv"));
       }
       else {
         printf("\nLearning Speed must be between 0 and 1\n");
@@ -79,16 +94,15 @@ void runSchedule(scheduler* scheduler, jobs* jobs, int type, int arg, double dAr
       
       if (queueNum > 1 && !zeroFail) {
         scheduler->MLFQ(jobs, queueNum, queueTimeQuantum, arg);
+        scheduler->print();
+        scheduler->guiGantt(scheduler->ganttToFile("gantt_mlfq.csv"));
+        scheduler->guiPrint(scheduler->printToFile("results_mlfq.csv"));
       }
       else {
         printf("\nNumber of queues must be greater than 1 or preemption needs to be greater than 0\n");
       }
       break;
   }
-  scheduler->print();
-  //scheduler->gantt();
-  scheduler->printToFile();
-  scheduler->ganttToFile();
 }
 
 // run a schedule on default input
@@ -97,35 +111,49 @@ void runScheduleDefault(scheduler* scheduler, jobs* jobs, int type) {
     case 0:
       printf("\nAfter FIFO:\n");
       scheduler->FIFO(jobs);
+      scheduler->print();
+      scheduler->guiGantt(scheduler->ganttToFile("gantt_fifo.csv"));
+      scheduler->guiPrint(scheduler->printToFile("results_fifo.csv"));
       break;
     case 1:
       printf("\nAfter Round Robin\nTime quantum = 5:\n");
       scheduler->roundRobin(jobs, 5);
+      scheduler->print();
+      scheduler->guiGantt(scheduler->ganttToFile("gantt_rr.csv"));
+      scheduler->guiPrint(scheduler->printToFile("results_rr.csv"));
       break;
     case 2:
       printf("\nAfter Age Based Pri\nMax wait for priority upgrade = 20:\n");
       scheduler->ageBasedPri(jobs, 20);
+      scheduler->print();
+      scheduler->guiGantt(scheduler->ganttToFile("gantt_abp.csv"));
+      scheduler->guiPrint(scheduler->printToFile("results_abp.csv"));
       break;
     case 3:
       printf("\nAfter Ideal SJF:\n");
       scheduler->idealSJF(jobs);
+      scheduler->print();
+      scheduler->guiGantt(scheduler->ganttToFile("gantt_isjf.csv"));
+      scheduler->guiPrint(scheduler->printToFile("results_isjf.csv"));
       break;
     case 4:
       // alpha is a smoothing factor between 0 and 1
       printf("\nAfter Predictive SJF\nLearning Speed = 0.5\n Initial BT Estimate = 10:\n");
       scheduler->realSJF(jobs, 0.5, 10);
+      scheduler->print();
+      scheduler->guiGantt(scheduler->ganttToFile("gantt_psjf.csv"));
+      scheduler->guiPrint(scheduler->printToFile("results_psjf.csv"));
       break;
     case 5:
       printf("\nAfter Multilvl Feedback Queue\nQueue number = 3\nPreemption = {15, 30, \
 50}:\nMax wait for queue upgrade = 200:\n");
       int queueTimeQuantum[] = {15, 30, 50};
       scheduler->MLFQ(jobs, 3, queueTimeQuantum, 200);
+      scheduler->print();
+      scheduler->guiGantt(scheduler->ganttToFile("gantt_mlfq.csv"));
+      scheduler->guiPrint(scheduler->printToFile("results_mlfq.csv"));
       break;
   }
-  scheduler->print();
-  //scheduler->gantt();
-  scheduler->printToFile();
-  scheduler->ganttToFile();
 }
 
 int main(int argc, char* argv[]) {

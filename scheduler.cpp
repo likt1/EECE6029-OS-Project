@@ -479,15 +479,15 @@ void scheduler::print() {
 
   printf("---------- + ---- + -------- + -------- + -------- + ---------- + ----------- + ----------\n\n");
 
-  printf("AVERAGE TURN-AROUND TIME: %d\nAVERAGE WAITING TIME: %d\n", tatSum/this->size(), wtSum/this->size());
+  printf("AVERAGE TURN-AROUND TIME: %d\nAVERAGE WAITING TIME: %d\n\n", tatSum/this->size(), wtSum/this->size());
 }
 
-std::string scheduler::printToFile() {
+std::string scheduler::printToFile(std::string filename) {
   std::ofstream outputFile;
-  std::string filename = "output/results.csv";
+  std::string filepath = "output/"+filename;
 
   // create and open the csv
-  outputFile.open(filename, std::ios::out);
+  outputFile.open(filepath, std::ios::out);
 
   // throw error if file not open
   if(!outputFile) { std::cerr << "Can't open output file."<<std::endl; exit(1); }
@@ -519,10 +519,13 @@ std::string scheduler::printToFile() {
   // close file
   outputFile.close();
 
-  return filename;
+  return filepath;
 }
 
-void scheduler::guiPrint(std::string pathToCSV) {}
+void scheduler::guiPrint(std::string pathToCSV) {
+  std::cout<< "Run results exported to " << pathToCSV << ". Run \n>> python python_source/results.py " << pathToCSV << "\nto visualize this data.\n"<<std::endl;
+
+}
 
 void scheduler::gantt() {
   int gTime = 0;
@@ -552,12 +555,12 @@ void scheduler::gantt() {
   printf("+-----------+\n");
 }
 
-std::string scheduler::ganttToFile() {
+std::string scheduler::ganttToFile(std::string filename) {
   std::ofstream outputFile;
-  std::string filename = "output/gantt.csv";
+  std::string filepath = "output/"+filename;
 
   // create and open the csv
-  outputFile.open(filename, std::ios::out);
+  outputFile.open(filepath, std::ios::out);
 
   // throw error if file not open
   if(!outputFile) { std::cerr << "Can't open output file."<<std::endl; exit(1); }
@@ -598,11 +601,11 @@ std::string scheduler::ganttToFile() {
   // close file
   outputFile.close();
 
-  return filename;
+  return filepath;
 }
 
 void scheduler::guiGantt(std::string pathToCSV) {
-
+  std::cout<< "Gantt Chart exported to " << pathToCSV << ". Run \n>> python python_source/gantt.py " << pathToCSV << "\nto visualize this data.\n"<<std::endl;
 }
 
 //====================== Clear functions ======================//
