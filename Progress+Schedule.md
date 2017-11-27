@@ -40,16 +40,38 @@ Simple scheduler writing to be completed
 * Darius: SJF, Scheduler Class with CLI Output (move main() schedulers to class)
 Finalize test suites
 
-## Scheduled
 #### Week of 10/29
 Polish
 * Refactored code
 * Good CLI output
 Decide on GUI output
+* Output to csv
+* Call Python script on csv
 Schedule writing schedulers, writing GUI output, testing & documentation
+Submit Beta
 
-#### _By 11/30_
-Woring complex schedulers (ML Feedback, Linux CFS)
-Graphical Output
-Documentation & complexity analysis on an algorithm
+#### Week of 11/5
+CSV Randomizer
+GUI Graphing
+Initial work on CFS and MLF
 
+#### Week of 11/12
+MLF Complete
+GUI Graphing re-written with new libraries
+CFS Cancelled
+
+#### Week of 11/19 _(Thanksgiving Week)_
+Lottery Scheduler written to replace CFS
+Update script generation to flags? Gaussian randomness?
+Documentation -- first draft to be written by Darius
+* Complexity Analysis & Proof of Correctness
+* Literature Survey
+* Final Test Suite Design (Kendrick)
+* Alpha and Beta testing documentation (3 teams walkthrough required)
+* Everything Else (Gantt, prototyping description, software requirements, commit documentation, bug report and maintenance, educational tool)
+
+
+## Scheduled
+#### Week of 11/26
+Documentation Finish
+Project Submit

@@ -29,17 +29,30 @@ Write scheduler(s) in C/C++ to demonstrate implementation of schedulers and simu
 	* 3 Queues Minimum
 6. Homemade Linux CFS
 
-## Things to Write
+## HOW TO USE
+Just specify a csv jobs file to run every scheduler.
+To run a specific scheduler, add the following after the file name:
+
+Schedulers Implemented:
+* `fifo`: First In First Out 
+* `rr`: Round Robin
+* `abp`: Age Based Priority
+* `isjf`: Ideal Shortest Job First
+* `psfj`: Predictive Shortest Job First
+* `mlfq`: Multi-Level Feedback Queue
+
+## Process Notes
+### Things to Write
 * Five or Six Schedulers
 * Input Interface
 * Output Graphs
 
-## Input Interface
+### Input Interface
 * File Reads
 * CSV: Process Number, Arrival Time, Burst Time, Priority (Optional)
 * Argument: Time Quantum
 
-## Additional Design Goals
+### Additional Design Goals
 * Creativity is Important
 * Test on Multiple Systems
 	* Including Single Core v. Multi Core
