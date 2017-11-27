@@ -68,6 +68,13 @@ void runSchedule(scheduler* scheduler, jobs* jobs, int type, int arg, double dAr
         printf("\nLearning Speed must be between 0 and 1\n");
       }
       break;
+    case 6:
+      printf("\nAfter Lottery:\n");
+      scheduler->lottery(jobs);
+      scheduler->print();
+      scheduler->guiGantt(scheduler->ganttToFile("gantt_lottery.csv"));
+      scheduler->guiPrint(scheduler->printToFile("results_lottery.csv"));
+      break;
     case 5:
       // get int array from string
       bool zeroFail = false;
@@ -144,9 +151,15 @@ void runScheduleDefault(scheduler* scheduler, jobs* jobs, int type) {
       scheduler->guiGantt(scheduler->ganttToFile("gantt_psjf.csv"));
       scheduler->guiPrint(scheduler->printToFile("results_psjf.csv"));
       break;
+    case 6:
+      printf("\nAfter Lottery:\n");
+      scheduler->lottery(jobs);
+      scheduler->print();
+      scheduler->guiGantt(scheduler->ganttToFile("gantt_lottery.csv"));
+      scheduler->guiPrint(scheduler->printToFile("results_lottery.csv"));
+      break;
     case 5:
-      printf("\nAfter Multilvl Feedback Queue\nQueue number = 3\nPreemption = {15, 30, \
-50}:\nMax wait for queue upgrade = 200:\n");
+      printf("\nAfter Multilvl Feedback Queue\nQueue number = 3\nPreemption = {15, 30, 50}:\nMax wait for queue upgrade = 200:\n");
       int queueTimeQuantum[] = {15, 30, 50};
       scheduler->MLFQ(jobs, 3, queueTimeQuantum, 200);
       scheduler->print();
@@ -193,6 +206,10 @@ int main(int argc, char* argv[]) {
           printf("Command input:\n");
           printf("fileName mlfq preemptQuantum1,preemptQuantum2,... queueUpgradeWaitTime\n\n");
         }
+        else if(strMatch(modeStr, "lottery")) {
+          printf("Command input:\n");
+          printf("fileName lottery\n\n");
+        }
         else if(strMatch(modeStr, "sort")) {
           printf("Command input:\n");
           printf("fileName sort type(1, 2 or 3)\n\n");
@@ -210,10 +227,10 @@ int main(int argc, char* argv[]) {
         printf("Just specify a csv jobs file to run every scheduler.\n");
         printf("To get help on a specific scheduler, specify 'help' as the file name:\n");
         printf("To run a specific scheduler, add the following after the file name:\n");
-        printf("fifo, rr, abp, isjf, psjf, mlfq\n\n");
+        printf("fifo, rr, abp, isjf, psjf, mlfq, lottery\n\n");
         printf("Schedulers Implemented:\n");
         printf("First In First Out\nRound Robin\nAge Based Priority\nIdeal Shortest Job First\n\
-Predictive Shortest Job First\nMultilevel Feedback Queue.\n");
+Predictive Shortest Job First\nMultilevel Feedback Queue\nLottery.\n");
       }
       return 0; // terminate program
     }
@@ -280,6 +297,9 @@ Predictive Shortest Job First\nMultilevel Feedback Queue.\n");
         else { // defualt for mlfq, numQueues = 3 preemptQuantums = 15,30,50 queueUpgradeWaitTime = 200
           runScheduleDefault(&scheduledJobs, &schedulerJobs, 5);
         }
+      }
+      else if(strMatch(modeStr, "lottery")) {
+        runScheduleDefault(&scheduledJobs, &schedulerJobs, 6);
       }
       else if(strMatch(modeStr, "sort")) {
         if (argc > 3) {

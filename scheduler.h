@@ -70,6 +70,9 @@ public:
 	// First-In First Out
 	void FIFO(jobs*);
 
+	// Lottery
+	void lottery(jobs*);
+
 	// Shortest Job First
 	void idealSJF(jobs*);
 	void realSJF(jobs*, double, int);

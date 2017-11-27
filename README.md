@@ -40,6 +40,7 @@ Schedulers Implemented:
 * `isjf`: Ideal Shortest Job First
 * `psfj`: Predictive Shortest Job First
 * `mlfq`: Multi-Level Feedback Queue
+* `lottery`: Lottery
 
 ## Process Notes
 ### Things to Write

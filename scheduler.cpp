@@ -2,6 +2,8 @@
 #include "jobs.h"
 
 #include "stdio.h"
+#include <stdlib.h>
+#include <ctime>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -77,6 +79,53 @@ void scheduler::FIFO(jobs* schedulerJobs) {
     this->pushHistory(nextJob, currentTime - nextJob->burstTime, nextJob->burstTime);
 
     }
+}
+
+void scheduler::lottery(jobs* schedulerJobs) {
+  // initialize rng
+  std::srand(std::time(0));
+
+  this->clearScheduler();
+  schedulerJobs->sort(2); //sort by time
+
+  int currentTime = 0;
+  int jobsRemaining = schedulerJobs->size();
+  std::vector<bool> jobCompleted(jobsRemaining, false);
+
+  while (jobsRemaining != 0) {
+    int incrementCurrentTime = 1;
+
+    std::vector<int> candidates;
+
+    // create list of incomplete jobs before current time
+    for (int i=0; i < schedulerJobs->size(); i++) {
+      if (jobCompleted[i]) { continue; }
+      
+      job* currentJob = schedulerJobs->getAt(i);
+      if (currentJob->arrivalTime <= currentTime) {
+        candidates.push_back(i);
+      }
+    }
+
+    // select a job to run
+    if (candidates.size() != 0) {
+      int selection  = std::rand() % candidates.size();
+      int winnerIdx  = candidates[selection];
+      job* winnerJob = schedulerJobs->getAt(winnerIdx);
+
+      // do the job
+      incrementCurrentTime = winnerJob->burstTime;
+      this->push(winnerJob, currentTime+incrementCurrentTime);
+      this->pushHistory(winnerJob, currentTime, winnerJob->burstTime);
+
+      //mark it as complete
+      jobCompleted[winnerIdx] = true;
+      --jobsRemaining;
+    }
+
+    currentTime += incrementCurrentTime;
+  }
+
 }
 
 void scheduler::idealSJF(jobs* schedulerJobs) {
